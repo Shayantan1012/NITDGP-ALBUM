@@ -97,7 +97,12 @@ function FinalImagePagePresentation({ imageDetails, name, imageType, year, colle
                 renderItem={(image) => (
                   <figure className="feature-slide feature-slide--detail">
                     <img src={image.imageURL} alt={image.description || name} />
-                    {image.description && <figcaption><h3>{image.description}</h3></figcaption>}
+                    {image.description && (
+                      <figcaption className="feature-slide__caption">
+                        <span>Featured photograph</span>
+                        <p>{image.description}</p>
+                      </figcaption>
+                    )}
                   </figure>
                 )}
               />
@@ -116,7 +121,9 @@ function FinalImagePagePresentation({ imageDetails, name, imageType, year, colle
                       <img src={image.imageURL} alt={image.description || name} />
                     </button>
                     <div className="photo-card__footer">
-                      <p>{image.description || "Campus photograph"}</p>
+                      <p title={image.description || "Campus photograph"}>
+                        {image.description || "Campus photograph"}
+                      </p>
                       {canManage && (
                         <button
                           type="button"
