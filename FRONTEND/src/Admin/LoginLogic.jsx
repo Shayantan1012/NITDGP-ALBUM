@@ -22,7 +22,7 @@ function LoginLogic() {
     setLoading(true)
     try {
       await dispatch(Login(loginData)).unwrap()
-      navigate("/")
+      navigate("/admin", { replace: true })
     } catch {
       // The thunk displays the API error.
     } finally {

@@ -45,12 +45,12 @@ function ImageUpload() {
   useEffect(() => {
     if (!isLoggedIn) {
       toast.error("Please log in")
-      navigate("/nitdgp/admin", { replace: true })
+      navigate("/admin/login", { replace: true })
       return
     }
     if (!uploadActions[type]) {
       toast.error("Invalid upload type")
-      navigate("/", { replace: true })
+      navigate("/admin", { replace: true })
     }
   }, [isLoggedIn, navigate, type])
 
@@ -100,11 +100,11 @@ function ImageUpload() {
     setLoading(true)
     try {
       await dispatch(uploadGalleryImage({ category, formData })).unwrap()
-      navigate(-1)
+      navigate(type === "EVENT" ? "/admin/events" : type === "CAMPUS" ? "/admin/campus" : "/admin/departments")
     } catch (error) {
       if (isExpiredSession(error)) {
         dispatch(invalidateSession())
-        navigate("/nitdgp/admin", { replace: true })
+        navigate("/admin/login", { replace: true })
       }
     } finally {
       setLoading(false)

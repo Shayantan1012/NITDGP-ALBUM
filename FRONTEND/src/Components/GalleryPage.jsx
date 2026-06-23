@@ -15,10 +15,11 @@ import {
 import sorry from "../assets/sorry.svg"
 import { EmptyState, LoadingState } from "./PageState"
 
-function GalleryPage({ category, imageType, title, eyebrow, description, nameField }) {
+function GalleryPage({ category, imageType, title, eyebrow, description, nameField, adminMode = false }) {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const isAdmin = useAppSelector(selectIsAdmin)
+  const canManage = adminMode && isAdmin
   const groups = useAppSelector(selectGalleryItems(category))
   const status = useAppSelector(selectGalleryStatus(category))
   const [pendingDelete, setPendingDelete] = useState(null)
@@ -57,7 +58,7 @@ function GalleryPage({ category, imageType, title, eyebrow, description, nameFie
     } catch (error) {
       if (isExpiredSession(error)) {
         dispatch(invalidateSession())
-        navigate("/nitdgp/admin", { replace: true })
+        navigate("/admin/login", { replace: true })
       }
     } finally {
       setDeleting(false)
@@ -72,13 +73,14 @@ function GalleryPage({ category, imageType, title, eyebrow, description, nameFie
         <button
           type="button"
           className="collection-card__open"
-          onClick={() => navigate("/finalImage", {
+          onClick={() => navigate(adminMode ? "/admin/collection" : "/finalImage", {
             state: {
               imageDetails: photos,
               name: groupName,
               imagetype: imageType,
               year: group.year,
               collectionID: group._id,
+              adminMode,
             },
           })}
         >
@@ -92,7 +94,7 @@ function GalleryPage({ category, imageType, title, eyebrow, description, nameFie
             <p>Open collection <span aria-hidden="true">→</span></p>
           </div>
         </button>
-        {isAdmin && (
+        {canManage && (
           <button
             type="button"
             className="collection-card__delete"
@@ -111,27 +113,27 @@ function GalleryPage({ category, imageType, title, eyebrow, description, nameFie
   }
 
   return (
-    <div className="app-shell">
-      <Header PageType={imageType === "CAMPUS" ? "MyCampus" : `${imageType}s`} />
+    <div className={adminMode ? "admin-page" : "app-shell"}>
+      {!adminMode && <Header PageType={imageType === "CAMPUS" ? "MyCampus" : `${imageType}s`} />}
       <main>
-        <section className="page-hero page-container">
+        <section className={adminMode ? "admin-heading" : "page-hero page-container"}>
           <div>
             <span className="eyebrow">{eyebrow}</span>
             <h1>{title}</h1>
             <p>{description}</p>
           </div>
-          {isAdmin && (
+          {canManage && (
             <button
               type="button"
               className="button button--primary"
-              onClick={() => navigate("/admin/imageUpload", { state: { imageType } })}
+              onClick={() => navigate("/admin/upload", { state: { imageType } })}
             >
               + Add collection
             </button>
           )}
         </section>
 
-        <section className="page-container section-space">
+        <section className={adminMode ? "admin-gallery-content" : "page-container section-space"}>
           {status === "loading" && !groups.length && <LoadingState />}
           {status === "failed" && !groups.length && (
             <EmptyState
@@ -186,7 +188,7 @@ function GalleryPage({ category, imageType, title, eyebrow, description, nameFie
           )}
         </section>
       </main>
-      <Footer />
+      {!adminMode && <Footer />}
 
       {pendingDelete && (
         <div className="dialog-backdrop" role="presentation" onMouseDown={() => !deleting && setPendingDelete(null)}>
@@ -226,6 +228,7 @@ GalleryPage.propTypes = {
   eyebrow: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   nameField: PropTypes.string.isRequired,
+  adminMode: PropTypes.bool,
 }
 
 export default GalleryPage

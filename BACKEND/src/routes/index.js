@@ -3,6 +3,7 @@ const adminRoutes = require("../modules/admin/admin.routes")
 const authRoutes = require("../modules/auth/auth.routes")
 const createGalleryRouter = require("../modules/gallery/gallery.routes")
 const galleryController = require("../modules/gallery/gallery.controller")
+const aboutRoutes = require("../modules/about/about.routes")
 
 const router = express.Router()
 
@@ -11,6 +12,7 @@ router.use("/admin/events", createGalleryRouter("event"))
 router.use("/admin/departments", createGalleryRouter("department"))
 router.use("/nit-dgp/admin", adminRoutes)
 router.use("/admin/auth", authRoutes)
+router.use("/about", aboutRoutes)
 
 router.get("/user/campus", galleryController.list("campus"))
 router.get("/user/event", galleryController.list("event"))

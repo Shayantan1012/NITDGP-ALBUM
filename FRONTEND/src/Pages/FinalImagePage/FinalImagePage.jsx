@@ -22,11 +22,12 @@ const categories = {
   DEPARTMENT: GALLERY_TYPES.DEPARTMENT,
 }
 
-function FinalImagePagePresentation({ imageDetails, name, imageType, year, collectionID }) {
+function FinalImagePagePresentation({ imageDetails, name, imageType, year, collectionID, adminMode = false }) {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const isLoggedIn = useAppSelector(selectIsLoggedIn)
   const isAdmin = useAppSelector(selectIsAdmin)
+  const canManage = adminMode && isAdmin
   const [images, setImages] = useState(imageDetails)
   const [pendingDelete, setPendingDelete] = useState(null)
   const [deleting, setDeleting] = useState(false)
@@ -35,7 +36,7 @@ function FinalImagePagePresentation({ imageDetails, name, imageType, year, colle
     if (!pendingDelete) return
     if (!isLoggedIn) {
       toast.error("Please log in")
-      navigate("/nitdgp/admin")
+      navigate("/admin/login")
       return
     }
     setDeleting(true)
@@ -51,7 +52,7 @@ function FinalImagePagePresentation({ imageDetails, name, imageType, year, colle
     } catch (error) {
       if (isExpiredSession(error)) {
         dispatch(invalidateSession())
-        navigate("/nitdgp/admin", { replace: true })
+        navigate("/admin/login", { replace: true })
       }
     } finally {
       setDeleting(false)
@@ -59,25 +60,32 @@ function FinalImagePagePresentation({ imageDetails, name, imageType, year, colle
   }
 
   return (
-    <div className="app-shell">
-      <Header
-        PageType="FinalImage"
-        name={name}
-        imageType={imageType}
-        year={year}
-        collectionID={collectionID}
-      />
+    <div className={adminMode ? "admin-page" : "app-shell"}>
+      {!adminMode && <Header />}
       <main>
-        <section className="page-hero page-container page-hero--compact">
+        <section className={adminMode ? "admin-heading admin-heading--collection" : "page-hero page-container page-hero--compact"}>
           <div>
             <span className="eyebrow">{imageType.toLowerCase()} collection</span>
             <h1>{name}</h1>
             {imageType === "EVENT" && <div className="collection-year">{year || "Year not specified"}</div>}
             <p>{images.length} {images.length === 1 ? "photograph" : "photographs"} in this album.</p>
           </div>
+          {canManage && (
+            <div className="admin-heading__actions">
+              <button
+                type="button"
+                className="button button--primary"
+                onClick={() => navigate("/admin/upload", {
+                  state: { name, imageType, year, collectionID },
+                })}
+              >
+                Add photo
+              </button>
+            </div>
+          )}
         </section>
 
-        <section className="page-container section-space">
+        <section className={adminMode ? "admin-gallery-content" : "page-container section-space"}>
           {!images.length ? (
             <EmptyState title="This collection is empty" message="Add a photograph to bring this album to life." />
           ) : (
@@ -109,7 +117,7 @@ function FinalImagePagePresentation({ imageDetails, name, imageType, year, colle
                     </button>
                     <div className="photo-card__footer">
                       <p>{image.description || "Campus photograph"}</p>
-                      {isAdmin && (
+                      {canManage && (
                         <button
                           type="button"
                           className="icon-button icon-button--danger"
@@ -126,7 +134,7 @@ function FinalImagePagePresentation({ imageDetails, name, imageType, year, colle
           )}
         </section>
       </main>
-      <Footer />
+      {!adminMode && <Footer />}
 
       {pendingDelete && (
         <div
@@ -188,6 +196,7 @@ FinalImagePagePresentation.propTypes = {
   imageType: PropTypes.oneOf(["EVENT", "CAMPUS", "DEPARTMENT"]).isRequired,
   year: PropTypes.number,
   collectionID: PropTypes.string,
+  adminMode: PropTypes.bool,
 }
 
 export default FinalImagePagePresentation

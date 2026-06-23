@@ -38,7 +38,7 @@ function RegisterAdmin() {
     setLoading(true)
     try {
       await dispatch(createAccount(signUpState)).unwrap()
-      navigate("/nitdgp/admin")
+      navigate("/admin/login")
     } catch {
       // The thunk displays the API error.
     } finally {

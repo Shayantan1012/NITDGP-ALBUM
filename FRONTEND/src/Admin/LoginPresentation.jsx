@@ -15,7 +15,7 @@ function LoginPresentation({ handelUserInput, handelFormSubmit }) {
           <p>Sign in to curate collections, upload photographs, and keep the campus archive organised.</p>
           <div className="auth-card__register">
             <span>Joining the archive team?</span>
-            <Link to="/nitdgp/admin/register">Create an admin account →</Link>
+            <Link to="/admin/register">Create an admin account →</Link>
           </div>
         </div>
         <form onSubmit={handelFormSubmit} className="form-panel">
@@ -27,7 +27,7 @@ function LoginPresentation({ handelUserInput, handelFormSubmit }) {
           <input type="password" id="password" name="password" placeholder="Your password" required minLength={6} onChange={handelUserInput} />
           <button type="submit" className="button button--primary">Sign in</button>
           <p className="form-panel__foot">
-            New administrator? <Link to="/nitdgp/admin/register">Create an account</Link>
+            New administrator? <Link to="/admin/register">Create an account</Link>
           </p>
         </form>
       </section>

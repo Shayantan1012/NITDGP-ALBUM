@@ -42,7 +42,7 @@ function PopUp({ eventName, imageType, year, onClose }) {
     } catch (error) {
       if (isExpiredSession(error)) {
         dispatch(invalidateSession())
-        navigate("/nitdgp/admin", { replace: true })
+        navigate("/admin/login", { replace: true })
       }
     }
   }

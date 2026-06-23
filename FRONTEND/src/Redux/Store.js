@@ -5,6 +5,7 @@ import AuthReducer, {
   LogOut,
 } from './Slices/AdminSlice'
 import GalleryReducer from './Slices/GallerySlice'
+import AboutReducer from './Slices/AboutSlice'
 import { clearSession, saveSession } from './sessionStorage'
 
 const sessionListener = createListenerMiddleware()
@@ -28,6 +29,7 @@ export const store = configureStore({
   reducer: {
     auth: AuthReducer,
     gallery: GalleryReducer,
+    about: AboutReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().prepend(sessionListener.middleware),

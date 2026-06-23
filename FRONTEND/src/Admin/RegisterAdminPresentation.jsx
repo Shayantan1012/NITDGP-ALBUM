@@ -26,7 +26,7 @@ function RegisterAdminPresentation({ handelUserInput, handelFormSubmit }) {
           <p>Create an administrator account to preserve campus memories and organise visual collections.</p>
           <div className="auth-card__register">
             <span>Already have access?</span>
-            <Link to="/nitdgp/admin">Return to sign in →</Link>
+            <Link to="/admin/login">Return to sign in →</Link>
           </div>
         </div>
         <form onSubmit={handelFormSubmit} className="form-panel form-panel--register">
@@ -51,7 +51,7 @@ function RegisterAdminPresentation({ handelUserInput, handelFormSubmit }) {
             ))}
           </div>
           <button type="submit" className="button button--primary">Create account</button>
-          <p className="form-panel__foot">Already registered? <Link to="/nitdgp/admin">Sign in</Link></p>
+          <p className="form-panel__foot">Already registered? <Link to="/admin/login">Sign in</Link></p>
         </form>
       </section>
     </main>

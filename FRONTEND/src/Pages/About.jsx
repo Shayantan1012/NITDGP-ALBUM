@@ -1,10 +1,38 @@
+import { EmptyState, LoadingState } from "../Components/PageState"
 import Footer from "../Layout/Footer"
 import Header from "../Layout/Header"
+import { useAppSelector } from "../Redux/hooks"
+import { selectAboutSections, selectAboutStatus } from "../Redux/Slices/AboutSlice"
+
+const defaultSections = [
+  {
+    _id: "default-history",
+    eyebrow: "1960",
+    title: "A long academic legacy",
+    content: "Established as Regional Engineering College, Durgapur, the institute was created to advance engineering education and national integration.",
+  },
+  {
+    _id: "default-campus",
+    eyebrow: "187 acres",
+    title: "A residential campus",
+    content: "The institute sits north-west of Kolkata along the historic Grand Trunk Road, with academic, residential, and community spaces.",
+  },
+  {
+    _id: "default-disciplines",
+    eyebrow: "Many disciplines",
+    title: "Ideas across departments",
+    content: "Engineering, science, management, and research communities work side by side, creating the memories collected in this archive.",
+  },
+]
 
 function AboutUs() {
+  const managedSections = useAppSelector(selectAboutSections)
+  const status = useAppSelector(selectAboutStatus)
+  const sections = managedSections.length ? managedSections : defaultSections
+
   return (
     <div className="app-shell">
-      <Header PageType="About" />
+      <Header />
       <main>
         <section className="page-hero page-container">
           <div>
@@ -13,11 +41,21 @@ function AboutUs() {
             <p>NIT Durgapur has grown from a regional engineering college into one of India&apos;s leading technical institutions.</p>
           </div>
         </section>
-        <section className="page-container about-grid section-space">
-          <article><span>1960</span><h2>A long academic legacy</h2><p>Established as Regional Engineering College, Durgapur, the institute was created to advance engineering education and national integration.</p></article>
-          <article><span>187 acres</span><h2>A residential campus</h2><p>The institute sits north-west of Kolkata along the historic Grand Trunk Road, with academic, residential, and community spaces.</p></article>
-          <article><span>Many disciplines</span><h2>Ideas across departments</h2><p>Engineering, science, management, and research communities work side by side, creating the memories collected in this archive.</p></article>
-        </section>
+        {status === "loading" && !managedSections.length ? (
+          <LoadingState message="Loading About content…" />
+        ) : status === "failed" && !sections.length ? (
+          <EmptyState title="About content is unavailable" message="Please try again later." />
+        ) : (
+          <section className="page-container about-grid section-space">
+            {sections.map((section) => (
+              <article key={section._id}>
+                <span>{section.eyebrow}</span>
+                <h2>{section.title}</h2>
+                <p>{section.content}</p>
+              </article>
+            ))}
+          </section>
+        )}
       </main>
       <Footer />
     </div>
