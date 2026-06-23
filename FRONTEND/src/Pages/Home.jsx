@@ -77,11 +77,11 @@ function Home() {
             items={featuredImages}
             label="Featured campus photographs"
             renderItem={(image) => (
-              <figure className="feature-slide">
+              <figure className="feature-slide feature-slide--home">
                 <img src={image.imageURL} alt={image.description || "Campus memory"} />
-                <figcaption>
+                <figcaption className="feature-slide__caption">
                   <span>Campus chronicle</span>
-                  <h3>{image.description || "A moment from NIT Durgapur"}</h3>
+                  <p>{image.description || "A moment from NIT Durgapur"}</p>
                 </figcaption>
               </figure>
             )}
